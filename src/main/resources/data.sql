@@ -1,0 +1,1 @@
+insert into category values (1,'Texnika'),(2,'Apple');
