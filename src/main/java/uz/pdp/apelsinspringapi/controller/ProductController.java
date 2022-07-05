@@ -1,6 +1,8 @@
 package uz.pdp.apelsinspringapi.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uz.pdp.apelsinspringapi.dto.ApiResponse;
 import uz.pdp.apelsinspringapi.dto.ProductDTO;
@@ -14,27 +16,31 @@ public class ProductController {
     ProductService productService;
 
     @GetMapping
-    public ApiResponse getAll(){
-        return productService.getAll();
+    public ResponseEntity<?> getAll(){
+        return ResponseEntity.ok(productService.getAll());
     }
 
     @PostMapping
-    public ApiResponse save(@RequestBody ProductDTO productDTO){
-        return productService.save(productDTO);
+    public ResponseEntity<?> save(@RequestBody ProductDTO product){
+        ApiResponse save = productService.save(product);
+        return ResponseEntity.status(save.isSuccess() ? HttpStatus.CREATED : HttpStatus.CONFLICT).body(save);
     }
 
     @GetMapping("/{id}")
-    public ApiResponse getOne(@PathVariable Integer id){
-        return productService.getOne(id);
+    public ResponseEntity<?> getOne(@PathVariable Integer id){
+        ApiResponse response = productService.getOne(id);
+        return ResponseEntity.status(response.isSuccess() ? 200 : 404).body(response);
     }
 
     @PutMapping("/{id}")
-    public ApiResponse edit(@PathVariable Integer id,@RequestBody ProductDTO productDTO){
-        return productService.edit(id,productDTO);
+    public ResponseEntity<?> edit(@PathVariable Integer id,@RequestBody ProductDTO product){
+        ApiResponse response = productService.edit(id, product);
+        return ResponseEntity.status(response.isSuccess() ? HttpStatus.OK : HttpStatus.CONFLICT).body(response);
     }
 
     @DeleteMapping("/{id}")
-    public ApiResponse delete(@PathVariable Integer id){
-        return productService.delete(id);
+    public ResponseEntity<?> delete(@PathVariable Integer id){
+        ApiResponse response = productService.delete(id);
+        return ResponseEntity.status(response.isSuccess() ? 200 : 404).body(response);
     }
 }

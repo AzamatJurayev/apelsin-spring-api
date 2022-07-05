@@ -1,8 +1,11 @@
 package uz.pdp.apelsinspringapi.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uz.pdp.apelsinspringapi.dto.ApiResponse;
+import uz.pdp.apelsinspringapi.dto.OrderDTO;
 import uz.pdp.apelsinspringapi.dto.OrderDTO;
 import uz.pdp.apelsinspringapi.entity.Order;
 import uz.pdp.apelsinspringapi.service.OrderService;
@@ -16,27 +19,31 @@ public class OrderController {
     OrderService orderService;
 
     @GetMapping
-    public ApiResponse getAll(){
-        return orderService.getAll();
+    public ResponseEntity<?> getAll(){
+        return ResponseEntity.ok(orderService.getAll());
     }
 
     @PostMapping
-    public ApiResponse save(@RequestBody OrderDTO orderDTO){
-        return orderService.save(orderDTO);
+    public ResponseEntity<?> save(@RequestBody OrderDTO order){
+        ApiResponse save = orderService.save(order);
+        return ResponseEntity.status(save.isSuccess() ? HttpStatus.CREATED : HttpStatus.CONFLICT).body(save);
     }
 
     @GetMapping("/{id}")
-    public ApiResponse getOne(@PathVariable Integer id){
-        return orderService.getOne(id);
+    public ResponseEntity<?> getOne(@PathVariable Integer id){
+        ApiResponse response = orderService.getOne(id);
+        return ResponseEntity.status(response.isSuccess() ? 200 : 404).body(response);
     }
 
     @PutMapping("/{id}")
-    public ApiResponse edit(@PathVariable Integer id,@RequestBody OrderDTO orderDTO){
-        return orderService.edit(id,orderDTO);
+    public ResponseEntity<?> edit(@PathVariable Integer id,@RequestBody OrderDTO order){
+        ApiResponse response = orderService.edit(id, order);
+        return ResponseEntity.status(response.isSuccess() ? HttpStatus.OK : HttpStatus.CONFLICT).body(response);
     }
 
     @DeleteMapping("/{id}")
-    public ApiResponse delete(@PathVariable Integer id){
-        return orderService.delete(id);
+    public ResponseEntity<?> delete(@PathVariable Integer id){
+        ApiResponse response = orderService.delete(id);
+        return ResponseEntity.status(response.isSuccess() ? 200 : 404).body(response);
     }
 }

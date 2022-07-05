@@ -1,8 +1,11 @@
 package uz.pdp.apelsinspringapi.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uz.pdp.apelsinspringapi.dto.ApiResponse;
+import uz.pdp.apelsinspringapi.dto.PaymentDTO;
 import uz.pdp.apelsinspringapi.dto.PaymentDTO;
 import uz.pdp.apelsinspringapi.service.PaymentService;
 
@@ -14,27 +17,31 @@ public class PaymentController {
     PaymentService paymentService;
 
     @GetMapping
-    public ApiResponse getAll(){
-        return paymentService.getAll();
+    public ResponseEntity<?> getAll(){
+        return ResponseEntity.ok(paymentService.getAll());
     }
 
     @PostMapping
-    public ApiResponse save(@RequestBody PaymentDTO paymentDTO){
-        return paymentService.save(paymentDTO);
+    public ResponseEntity<?> save(@RequestBody PaymentDTO payment){
+        ApiResponse save = paymentService.save(payment);
+        return ResponseEntity.status(save.isSuccess() ? HttpStatus.CREATED : HttpStatus.CONFLICT).body(save);
     }
 
     @GetMapping("/{id}")
-    public ApiResponse getOne(@PathVariable Integer id){
-        return paymentService.getOne(id);
+    public ResponseEntity<?> getOne(@PathVariable Integer id){
+        ApiResponse response = paymentService.getOne(id);
+        return ResponseEntity.status(response.isSuccess() ? 200 : 404).body(response);
     }
 
     @PutMapping("/{id}")
-    public ApiResponse edit(@PathVariable Integer id,@RequestBody PaymentDTO paymentDTO){
-        return paymentService.edit(id,paymentDTO);
+    public ResponseEntity<?> edit(@PathVariable Integer id,@RequestBody PaymentDTO payment){
+        ApiResponse response = paymentService.edit(id, payment);
+        return ResponseEntity.status(response.isSuccess() ? HttpStatus.OK : HttpStatus.CONFLICT).body(response);
     }
 
     @DeleteMapping("/{id}")
-    public ApiResponse delete(@PathVariable Integer id){
-        return paymentService.delete(id);
+    public ResponseEntity<?> delete(@PathVariable Integer id){
+        ApiResponse response = paymentService.delete(id);
+        return ResponseEntity.status(response.isSuccess() ? 200 : 404).body(response);
     }
 }

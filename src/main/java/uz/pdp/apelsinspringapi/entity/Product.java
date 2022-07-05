@@ -29,9 +29,10 @@ public class Product {
     @Column(length = 20)
     private String description;
 
-    @Column(precision = 6,scale = 2)
+    @Column(precision = 6, scale = 2)
     private BigDecimal price;
 
     @Column(length = 1024)
     private String photo;
+
 }

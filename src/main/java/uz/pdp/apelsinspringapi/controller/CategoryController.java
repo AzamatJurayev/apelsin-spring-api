@@ -1,6 +1,8 @@
 package uz.pdp.apelsinspringapi.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uz.pdp.apelsinspringapi.dto.ApiResponse;
 import uz.pdp.apelsinspringapi.entity.Category;
@@ -14,27 +16,31 @@ public class CategoryController {
     CategoryService categoryService;
 
     @GetMapping
-    public ApiResponse getAll(){
-        return categoryService.getAll();
+    public ResponseEntity<?> getAll(){
+        return ResponseEntity.ok(categoryService.getAll());
     }
 
     @PostMapping
-    public ApiResponse save(@RequestBody Category category){
-        return categoryService.save(category);
+    public ResponseEntity<?> save(@RequestBody Category category){
+        ApiResponse save = categoryService.save(category);
+        return ResponseEntity.status(save.isSuccess() ? HttpStatus.CREATED : HttpStatus.CONFLICT).body(save);
     }
 
     @GetMapping("/{id}")
-    public ApiResponse getOne(@PathVariable Integer id){
-        return categoryService.getOne(id);
+    public ResponseEntity<?> getOne(@PathVariable Integer id){
+        ApiResponse response = categoryService.getOne(id);
+        return ResponseEntity.status(response.isSuccess() ? 200 : 404).body(response);
     }
 
     @PutMapping("/{id}")
-    public ApiResponse edit(@PathVariable Integer id,@RequestBody Category category){
-        return categoryService.edit(id,category);
+    public ResponseEntity<?> edit(@PathVariable Integer id,@RequestBody Category category){
+        ApiResponse response = categoryService.edit(id, category);
+        return ResponseEntity.status(response.isSuccess() ? HttpStatus.OK : HttpStatus.CONFLICT).body(response);
     }
 
     @DeleteMapping("/{id}")
-    public ApiResponse delete(@PathVariable Integer id){
-        return categoryService.delete(id);
+    public ResponseEntity<?> delete(@PathVariable Integer id){
+        ApiResponse response = categoryService.delete(id);
+        return ResponseEntity.status(response.isSuccess() ? 200 : 404).body(response);
     }
 }
