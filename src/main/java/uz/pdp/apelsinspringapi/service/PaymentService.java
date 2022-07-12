@@ -7,8 +7,10 @@ import uz.pdp.apelsinspringapi.dto.PaymentDTO;
 import uz.pdp.apelsinspringapi.entity.Invoice;
 import uz.pdp.apelsinspringapi.entity.Payment;
 import uz.pdp.apelsinspringapi.repository.InvoiceRepository;
+import uz.pdp.apelsinspringapi.repository.OrderRepository;
 import uz.pdp.apelsinspringapi.repository.PaymentRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -18,10 +20,18 @@ public class PaymentService {
     PaymentRepository paymentRepository;
     @Autowired
     InvoiceRepository invoiceRepository;
+    @Autowired
+    OrderRepository orderRepository;
 
     public ApiResponse getAll() {
         return ApiResponse.builder().message("Mana").success(true).data(paymentRepository.findAll()).build();
     }
+
+//    public ApiResponse getOwnPayment(Integer id){
+//        List<Integer> orders = orderRepository.findAllByCustomer_IdBetween(id);
+//        List<Integer> invoices = invoiceRepository.findAllByOrder_IdBetween(orders);
+//        return ApiResponse.builder().message("Mana").success(true).data(paymentRepository.findAllByInvoice_IdBetween(invoices)).build();
+//    }
 
     public ApiResponse save(PaymentDTO paymentDTO) {
         Payment payment = new Payment();
